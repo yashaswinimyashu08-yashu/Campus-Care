@@ -1,4 +1,7 @@
 from fastapi import FastAPI
+from sqlalchemy import text
+
+from backend.database import engine
 
 app = FastAPI(title="CampusCare API")
 
@@ -10,4 +13,10 @@ def home():
 
 @app.get("/health")
 def health_check():
-    return {"status": "healthy"}
+    with engine.connect() as connection:
+        connection.execute(text("SELECT 1"))
+
+    return {
+        "status": "healthy",
+        "database": "connected",
+    }
